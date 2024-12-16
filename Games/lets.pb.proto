@@ -1,0 +1,2219 @@
+syntax = "proto2";
+
+package Games;
+
+//-------------------------------------消息模版-开始--------------------------------
+
+//道具模板
+message itemTemp{
+    required int64 itemId = 1;         //道具ID
+    optional int32 itemType = 2;       //道具的类型
+    optional int32 num = 3;            //个数    
+    required bool  isExist = 4;        //判断道具是否存在
+}
+//成就模板
+message achievementTemp{
+    required int32  achievementId=1;         //任务ID
+    optional string param1 =2;               //条件值1
+    optional string param2 =3;               //条件值2
+    optional string param3 =4;               //条件值3
+    optional string param4 =5;               //条件值4
+    required int32  state =6;                //状态(0未领取 1:已领取) 是否能领取是根据参数来判断     
+}
+
+//玩家简易模板
+message playerSimpleTemp {
+    required int64 playerId = 1;            //玩家ID
+    required string playerName = 2;         //玩家名字
+    optional string headUrl = 3;            //头像地址
+    optional bool isOnline = 4;             //是否在线
+    optional bool isZaned = 5;              //是否赞过
+    optional string pos = 6;                //主城位置
+    optional bool isApplyed=7;              //是否申请过
+    optional int32 npcType=8;           //是否是机器人（0：玩家，1：马小云，2：机器人）
+    optional string unionName=9;
+    optional int32 titleId=10;           
+    optional string titleName=11;
+    optional string city=12;      //城市
+}
+
+//聊天消息模板
+message talkTemp {
+    required int64  sendId  = 1;        //发送者id
+    required string sendName = 2;       //发送者名字
+    required string content = 3;        //聊天内容
+    required int32  sendTime =4;        //发送时间
+    optional string headUrl=5;          //发送者头像
+    required int64  receiveId = 6;      //接受者id
+    optional string ranks = 7;          //排行榜
+    optional int32 sex = 8;              //性别
+}
+
+//用户信息模板
+message playerDataTemp{
+    required int64   playerId=1;            //用户id
+    optional string  playerName=2;            //名字
+    optional int32   sex=3;                    //性别
+    optional string  headUrl=4;               //头像
+    optional int32   diamond=5;               //钻石
+    optional string  gold=6;                   //金币
+    optional int32   lv=7;                  //玩家等级
+    optional int32   exp=8;                 //玩家经验 
+    optional int32   rank=9;                //玩家排名                                        
+    optional string  titleId=10;            //玩家称号   
+
+}
+
+//属性更新模板
+message attriuteTemp{
+    required int32 key=1;
+    required string value=2;
+}
+
+
+message shopGoodTemp{
+    required int32 goodId = 1;  //商店物品模版ID
+    required int32 doubleState = 2;     //首充双倍(1:首充双倍状态 0:非首充双倍状态)
+}
+
+//邮件消息的模板
+message mailTemp {
+    required int32 mesId = 1;               //消息ID        
+    required string content = 2;            //内容     
+    required int64 time = 3;                //时间（消息-发送时间，邮件-过期时间）
+    required int64 sendPlayerId = 4;        //发送者的ID
+    required string sendPlayerName = 5;     //发送者的名字
+    optional string prizeStr = 6;           //奖品字段
+    optional int32 readState = 7;           //阅读状态（1-未读，2-已读）
+    optional int32 getState = 8;            //领取状态（1-未领取，2-已领取）
+    optional int32 typeId = 9;              //消息的内容类型id（对应配置表） 
+    optional string title = 10;             //消息的标题
+    optional string pos = 11;               //跳转到的坐标
+    optional int32 readTime = 12;          //阅读时间
+    optional int64 operateId = 13;          //操作的玩家id
+}
+
+//消息接收设置模板
+message mesSettingTemp {
+    required int32 type = 1;            //类型（1.点赞2.收购类3.谣言4.偷取5.营销6.指导）
+    required bool set = 2;              //类型对应的设置
+}
+
+//店铺金币收取模板
+message recevStoreGoldTemp {
+    required int32 pos = 1;                  //店铺位置     
+    required int64 gold = 2;                //收取的金币   
+}
+
+
+
+
+//建筑模版
+message buildingTemp {
+    required int32 buildingId  = 1;          //建筑模版ID
+    required int32 staffCount = 2;           //员工数量
+    required int32 level = 3;                //建筑的等级
+    repeated int32 talentIds=4;               //人才的ID
+    optional int32 dayUseCardTimes = 5;      //每天使用员工招募卡的数量
+}
+
+message buildingNanagerTemp{
+    required int32 id=1;                    //建筑管理的ID
+    required int32 exp=2;                   //建筑管理的经验
+}
+
+//投资的模版
+message investmentTemp{
+    required int32 index = 1;               //第几个格子
+    required int32 investmentId = 2;        //投资企业id
+    optional string name=3;                 //名称
+    optional string currentGold=4;          //当前已投资的金币数
+    optional string totalGold=5;            //总共的金币数
+    required int32 exp =6;                  //经验
+    required int32 investmentTimes=7;       //投资次数
+    required int32 coolTime=8;              //投资冷却时间
+    optional string baseGoldSpeed=9;         //基础赚钱速度
+    required int32 level=10;                //投资的等级
+    optional string getGoldSpeed=11;        //使用增值卡加成的值
+}
+
+//投资升级发展的模版
+message investmentLevelTemp{
+    required int32 investmentId = 1;        //投资ID
+    required int32 level = 2;               //等级
+    required string baseGoldSpeed=3;        //投资基础赚钱速度
+    repeated int32 talentIds=4;             //入驻的人才
+}
+
+
+//财团排行榜的数据
+message  ConsortiumRankTemp{
+   required  int64      userId=1;               //玩家的ID
+   required  string     nickName =2;            //玩家的名字
+   required  int32      turnTimes=3;            //玩家击败的轮数
+   required  string     headUrl =4;             //头像的地址
+}
+//仇人
+message ConsortiumEnemyTemp{
+    required int64  enmyUserId=1;
+    required string enmyNickname=2;
+    required int32 enmyScore=3;
+    required int64 lastupdatetime=4;
+    required int32 enemyTitleId=5;
+    optional string enemyTitleName=6;
+    optional string headUrl=7;
+    optional string unionName=8; //家族名称
+    optional string city=9;      //城市
+    optional int64 serverId=10;      //区服id
+    optional int32 fightNum=11;      //战斗次数
+
+}
+//集团战斗记录
+message ConsortiumRecordTemp{
+    required string enmyNickname=1;
+    required int32 killTalentCount=2;
+    required int32 score=3;
+    required int64 lastupdatetime=4;
+    required int64 enmyUserId=5;
+    required int32 enemyTitleId=6;
+    required bool isFight=7; //是否已经挑战过
+    optional string enemyTitleName=8;
+    optional int32 attackType=9;
+    optional string headUrl=10;
+    optional string unionName=11; //家族名称
+    optional string city=12;      //玩家的城市
+    optional int64 serverId=13;      //区服id
+    optional int32 fightNum=14;      //战斗次数
+}
+//集团战斗记录模版
+message  ConsortiumNoticeTemp{
+    required  int64   userid=1;
+    required  string  nickname=2;
+    required  int32   times=3;
+    required int64 lastupdatetime=4;
+    required string fightNickName=5;
+    required int32  titleId=6;
+    optional string titleName=7;
+    optional string headUrl=8;
+    optional string  unionName=9;          //家族名称
+    optional string  enemyUnionName=10;    //家族名称
+    optional string  enemyTitleName=11;     //敌方身份名字
+    optional int32   enemyTitleId=12;       //敌方身份ID
+    optional string  city=13;               //城市
+    optional int64 serverId=14;      //区服id
+    optional int64 enemyServerId=15;      //击败区服id
+}
+//集团战前的模版
+message  ConsortiumTemp{
+    required int32 buyBuffTimes=1;
+    repeated int32 talentIdList=2;
+    required int32 score=3;
+    optional int64 enemyUserId=4;
+    optional string enemyName=5;
+    optional int32 enemyScore=6;
+    optional int32 enemytitleId=7;
+    optional string enemyTitleName=8;
+    optional int32 buyDebuffTimes=9;
+    optional int64 serverId=10;
+    optional int32 fightNum = 11;     // 战斗次数
+}
+//祝福跟谣言模版
+message WishRumorTemp{
+    required int32 operType=1;  //操作类型(1:祝福 2:谣言)
+    required  int64 userid=2;
+    required  string nickname=3;    
+    required int64 lastupdatetime=4;    
+    optional int32 titleId=5;
+    optional string titleName=6;
+    optional string headUrl=7;
+    optional string unionName=8;
+    optional string  city=9;               //城市
+}
+
+message ConsortiumBattleArrayTemp{
+    repeated int32 talentIds=1;    //人才的ID
+}
+
+//战略合作的模版
+message CooperationTemp{
+    required int32  id=1;
+    required string name=2;                     //企业名称
+    required int32  typeId=3;                   //指定产业类型id
+    required string speed=4;                    //速度
+    required int64  userid=5;                   //拥有该企业的玩家的ID
+    required string nickName=6;                 //拥有该企业的玩家的名字
+    required int64  cooperationId=7;            //指定玩家的id（此为零时且状态为1时全服发布）    
+    required string cooperationNickName=8;      //合作者昵称
+    required int64  cooperationTime=9;          //合作公布时间
+    required int32  status=10;                  //0 是 还未合作 1 合作中 2 已经合作
+}
+
+
+//排行榜模板
+message rankTemp {
+    required int64  playerId =1;        //玩家ID
+    required string playerName=2;       //玩家名字
+    optional string headUrl=3;          //头像地址
+    optional int32  headType = 4;       //头像框类型 
+    optional string totalAsset=5;       //总资产
+    optional int32     titleId=6;
+    optional string    titleName=7;    
+    optional string unionName=8;
+    optional string  city=9;                           //城市  
+    optional int32  sex=10;                           //性别  
+    optional roleSkinDataTemp  mainRoleSkin=11;                   //角色皮肤
+}
+
+
+//家族排行榜模版
+message unionActivityRankTemp{
+    required int64  unionId =1;        //玩家ID
+    required string unionName=2;       //玩家名字
+    optional string masterName = 3;        //头像框类型
+    required int32  experience=4;       //经验
+    optional string totalAsset=5;       //总合成
+    optional string unionBadge=9;       //家族徽章
+}
+message unionActivityRankListTemp{
+    repeated unionActivityRankTemp rankList=1;
+}
+
+message rankListTemp{
+    repeated rankTemp rankList=1;
+}
+
+//排行榜模板
+message CrossRankTemp {
+    required int64  serverId=1;         //服务器ID
+    required int64  playerId =2;        //玩家ID
+    required string playerName=3;       //玩家名字
+    optional string headUrl=4;          //头像地址
+    optional int32  headType = 5;       //头像框类型 
+    optional string totalAsset=6;       //总资产
+    optional int32  titleId=7;
+    optional string titleName=8;    
+    optional string unionName=9;
+    optional string city=10;               //城市 
+    optional int32  sex=11;                           //性别  
+    optional roleSkinDataTemp  mainRoleSkin=12;                   //角色皮肤
+    optional MouseInfoTemp mouseInfo = 13;   //囤鼠
+    repeated MouseInfoTemp teamInfo = 14;   //囤鼠阵容
+}
+
+message CrossRankListTemp{
+    repeated CrossRankTemp rankList=1;
+}
+
+
+//活动的条件模版
+message activityConditionTemp{
+    required int32 conditionId=1;      //条件ID
+    required string value=2;
+    required bool isGetReward=3;
+    optional int64  startTime=4;       //开始时间
+}
+
+//活动的模版
+message activityTemp{
+    required int32 activityId =1;
+    repeated activityConditionTemp list=2;
+}
+//活动配置表的数据
+message activityDBTemp{
+    required int32  activityId =1;
+    required string activityName=2;     //活动名称
+    required int32  activityType=3;     //活动大类型
+    required int32  childType=4;        //活动小类型
+    required int32  getWay=5;           //领取方式
+    required string description=6;      //描述
+    required string rewardDesc=7;       //奖励描述
+    required string beginTime=8;        //开始时间
+    required string endTime=9;          //结束时间
+    required string beginShowTime=10;    //开始展示时间
+    required string endShowTime=11;      //结束展示时间
+    required string icon=12;             //图标
+    required string pic=13;              //图标
+    required string conditionalText=14;  //图标
+    required string unit=15;             //条件单位
+    repeated int64 serverId=16;             //参与区服编号
+    optional string Award=17;             //额外奖励
+    optional string cost=18;             
+    optional string param=19;             //闲置参数
+    optional string nextActivity=20;      //下一个活动
+    optional string param2=21;           //闲置参数（全民夺宝规则描述）
+}
+
+message activityConditionDBTemp{
+    required int32  conditionId =1;      //条件ID
+    required int32  activityId =2;       //活动ID
+    required string  titie =3;            //标题
+    required int32  type =4;             //类型
+    required string  reward =5;           //奖励
+    required string  param1 =6;           //参数1   
+    required string  param2 =7;           //参数2  
+    required string  param3 =8;           //参数3  
+    optional string  valueDiscount =9;           //价值折扣 
+}
+
+message crossStrongholdFightTimesTemp{
+    optional int32  nums =1;      //出战次数
+    optional int32  buyNums =2;       //购买次数
+    optional int32  reviveNums =3;       //复活券次数
+}
+
+//人才
+message TalentTemp{
+    required int32  talentId=1;                 //人才模版ID
+    optional int32  apt=2;                      //资质   
+    required int32  level=3;                    //等级
+    required int32  star=4;                     //星数
+    required int32  richareaId=5;               //富人区的位置
+    required int32  richareaFightTimes=6;       //富人区剩余打的次数
+    repeated int32  lvs=7;                       //技能列表
+    optional int32  consortiumFightTimes=8;
+    optional int32  consortiumChallengeTimes=9;
+    optional int32  consortiumBuyTimes=10;
+    optional int32  richareaBuyTimes=11;        //人才富人区的购买次数
+    optional int64  coolStartTime=12;           //冷却的起始时间
+    optional int32  consortiumCurTotalFightTimes=13; //今天打了多少次
+    optional int64  exp=14;                    //经验
+    optional int64  attackUnionBoosTime=15;     //家族副本攻击次数
+    optional int32  unionFightTimes = 16; // 参与家族战次数
+    optional int32  buyUnionBoosTime=17;        //购买家族副本攻击次数
+    optional int32  awakeLevel=18;              //觉醒等级
+    optional int32  worldId=19;                 //星球的ID
+    optional int32  blood=20;                 // 属性
+    optional int32  attackCrossBossTime=21;     // 跨服世界boss攻击次数
+    optional int32  buyCrossBossTime=22;     // 跨服世界boss攻击次数
+    optional int32  breakLv=23;             // 突破等级
+    optional int32  consortiumFightTimesCross = 24;
+    optional int32  consortiumChallengeTimesCross = 25;
+    optional int32  consortiumBuyTimesCross = 26;
+    optional int64  coolStartTimeCross = 27;           //冷却的起始时间
+    optional int64  consortiumCurTotalFightTimesCross = 28;   //今天打了多少次
+    optional int32  crossUnionFightTimes = 29;   //参跨服家族战次数
+    optional int32  useSkinId = 30;   //使用中的皮肤ID
+    optional int32  skinPicAdd = 31;   //皮肤加成
+    optional int32  titleId = 32;           //佩戴的称号id(配置表模板id)
+    optional int32  titleEndTime = 33;       //称号的结束时间
+    optional int32  haloSkillLv = 34;       //光环技能等级
+    repeated int32  skinIdList = 35;       //拥有的皮肤列表
+    optional  crossStrongholdFightTimesTemp crossStrongholdFieldTimes = 36; // 跨服据点战次数(野外)
+    optional  crossStrongholdFightTimesTemp crossStrongholdUnionTimes = 37; // 购买跨服据点战次数(家族)
+    optional int32 exclusiveSkillLv = 38;  //升品扩展技能等级
+    optional  crossStrongholdFightTimesTemp richWarFieldTimes = 39; // 首富争霸赛出战次数
+    optional int32 medalLv = 40;         // 勋章等级
+    optional int32 medalExp = 41;         // 勋章经验
+    optional int32 breakStageLv = 42;         // 突破阶段等级（默认0 突破后1000，根据配置）
+}
+
+//座驾技能的模版
+message VehicleSkillTemp{
+    required int32 pos=1;                   //位置
+    required int32 skillId=2;               //技能ID
+    required int32 value=3;                 //属性值    
+}
+
+//座驾的模版
+message VehicleTemp{
+    required int64 vehicleId=1;             //座架的模版ID
+    required int32 typeId=2;                //类型ID
+    required int32 lv=3;                    //资质
+    optional int32 talentId=4;              //人才的ID
+    repeated VehicleSkillTemp list=5;       //当前拥有的技能ID
+    optional int32 equipTimes=6;            //装备的次数
+    optional int32 modifyTimes=7;           //改装的次数
+    optional int32 buyTimes=8;              //购买装备的次数
+    optional int32 openHoleCount = 9;       //开孔数量
+    optional int32  unionFightTimes = 10; // 参与家族战次数
+    optional int32  oldCarFightTimes = 11; // 座驾战出战次数（旧的）
+    optional int32  exp = 12;             // 座驾经验
+    optional int32  breakLv = 13;         // 突破等级
+    optional int32  engineLv = 14;         // 引擎等级
+    optional int32  crossUnionFightTimes = 15; // 参与跨服家族战次数
+    optional int32  carFightTimes = 16; // 座驾战出战次数(新的)
+    optional int32  advancedLv = 17; // 进阶等级
+    optional int32  turboLv = 18;    // 涡轮等级
+    optional int32  breakStage = 19;    // 突破阶段(跟突破等级对应)
+}
+
+
+//金融战争详情模版
+message FinanceFightDetailTemp{
+    required int32 selfTalentId=1; //自己人才ID
+    required int64 selfMaxHp=2; //自己的总血量
+    required int64 selfEndHp=3; //自己的战斗后的血量
+    required int32 enemyTalentId=4; //敌人人才ID
+    required int64 enemyMaxHp=5; //敌人的总血量
+    required int64 enemyEndHp=6; //敌人的战斗后的血量    
+}
+message FinanceFightDetailListTemp{
+    repeated  FinanceFightDetailTemp  list=1;         //触发的论战类型 
+}
+
+
+//富人区排行的模版模版并同步
+message RichAreaRankTemp{
+    required   int32   id=1; 
+    optional   int64   userId=2;
+    optional   string  headUrl=3;
+    optional   string  nickname =4;
+    optional   int64   totalAttribute =5; 
+    optional   int64   getRewardTime=6;             //上一次领取收益的时间
+    optional   string  unionName=7;          //家族名称
+}
+
+//个人富人区的数据
+message SelfRichAreaDataTemp{
+    required   int32   seatId=1;            //坑位ID
+    repeated   int32   talentId=2;    
+    optional   int64   getRewardTime=3;             //上一次领取收益的时间    
+}
+
+//富人区战斗记录的模版
+message RichAreaFightRecordTemp{
+    required   int64   enmyUserId=1;        
+    required   string  enmyNickName=2;  
+    required   int64   lastupdatetime=3;   
+    required   string  richareaId=4;
+    optional   bool    isWin=5;                     //是否胜利
+    optional int32     titleId=6;
+    optional string    titleName=7;
+    optional string    headUrl=8;
+    optional string  unionName=9;          //家族名称
+    optional string  city=10;               //城市
+    optional int32   serverId=11;           //服务器ID
+    optional int32   worldId=12;            //星球ID
+}
+
+//通过昵称搜索到的富人区玩家数据模板
+message RichAreaSearchPlayerTemp {
+      required int64     userId=1;
+      required string    nickname=2;    //昵称
+      required string    cityName=3;   //定位城市
+      required int32     titleId=4;     //头衔id
+      required string    titleName=5;   //头衔名称
+      required string    headUrl=6;
+      required int32     serverId=7;
+      repeated RichAreaPlaceDataTemp list=8;
+}
+message RichAreaPlaceDataTemp {
+    required int32 id = 1;
+    optional int64 starId = 2; //-1为本服
+}
+
+//发送玩家自己的数据
+message FriendTemp{
+    required int64   playerId=1;            //用户id
+    optional string  playerName=2;            //名字
+    optional int32   sex=3;                    //性别
+    optional string  headUrl=4;               //头像     
+    optional int32   titleId=5;             //称号的ID
+    optional string  titleName=6;           //称号的名字
+    optional bool    isExist=7;             //是否存在
+    optional int64   zangTime = 8;          //点赞时间
+    optional string  unionName=9;           //家放名称
+    optional string  city=10;               //城市
+    optional int64   lastLoginTime=11;      //上次登录的时间
+    optional bool isMaxMarried = 12;        //该好友囤鼠是否到联姻上限次数
+    optional bool isMaxrequset = 13;       //该好友联姻列表是否已满
+}
+
+message onLineFriendTemp{
+    required int64 playerId = 1;
+    required int64 lastLoginTime = 2;
+    required string playerName = 3;
+    required string headUrl = 4;
+    required string unionName = 5;
+    required int32 titleId = 6;
+    required string titleName = 7;
+}
+
+//家族模版
+message UnionTemp{
+    required int64 unionId =1;
+    required string unionName=2;
+    required string outNotice=3;
+    required string innerNotice=4;
+    required int32 lv=5;
+    required int32 experience=6;
+    required int64 ownerId=7;
+    required string ownerNickName=8;
+    required string weiXin=9;
+    required string qqMessage=10;
+    required int32 currentPeopleCount=11;
+    required bool isAllowRandomJoin=12;
+    required string totalEarnGold=13;
+    required int32 wealth=14;
+    required bool exist=15;
+    optional int32  winCount=16;                          //家族战连胜次数    
+    optional int32 ownerTitleId =17;                    //族长称号
+    optional int32 ownerSkinId=19;                        //族长皮肤
+    optional string unionBadge = 20;                    //当前使用的家族徽章   “外框id_图案id” 0为没使用任何徽章
+    repeated UnionBadgeTempMsg unionBadgeList = 21;        //家族徽章列表
+}
+
+//家族成员模版
+message UnionMemberTemp{
+    required int64 unionId =1;
+    optional int64  userId=2;
+    optional string nickName=3;
+    optional string headUrl=4;
+    optional string goldSpeed=5;
+    optional int32 position=6;
+    optional int32 constructID=7;  //建设类型
+    optional int32 lastBuildingTime=8;  //上一次建设时间
+    optional int32 contribution=9;     //剩余贡献
+    optional int32  totalContribution=10;  //总贡献
+    optional string totalBuildingMoney=11;  //总建设金额
+    optional int32  buildingTimes=12;       //建筑建设的次数
+    optional int32  titleId=13;           //身份ID
+    optional string titleName=14;         //身份名字
+    optional int32  quitTime=15;      //退出时间    
+    optional string city=16;
+    optional int64  smeltCurrency=17;              //当前炼金材料
+    optional int64  todaySmeltCurrency=18;      //今日获得
+    
+}
+//家族成员请求的模版
+message UnionJoinTemp{
+    optional int64  userId=1;
+    optional string nickName=2;
+    optional string headUrl=3;
+    optional string goldSpeed=4;    
+    optional int32  titleId=5;           //身份ID
+    optional string titleName=6;         //身份名字
+    required bool   exist=7;                 //是否存在
+}
+
+//家族公告
+message UnionNoticeTemp{
+    optional int64  userId=1;
+    optional string nickName=2;
+    optional int32  type=3;
+    optional int64  enterTime=4;
+    optional string content =5;
+}
+
+//家族珍藏阁模版
+message UnionBuildingTemp{
+    required int32  buildingId =1;
+    required int32  exp=2;
+    required int32  lv=3;
+}
+
+
+message UnionRankTemp {
+    required int64  unionId =1;        //玩家ID
+    required string unionName=2;       //玩家名字
+    optional string masterName = 3;        //族长
+    optional string  totalEarnMoney=4;       
+    optional int32   currentPeopleCount=5;
+    optional int32   exp=6;   
+    optional int32   masterIdentityId=7;        //族长身份    
+    optional int32   masterSex=8;                //族长性别    
+    optional roleSkinDataTemp   masterMainRoleSkin=9;                //族长皮肤
+    optional string   unionBadge=10;                //族徽
+}
+message UnionRankListTemp{
+    repeated  UnionRankTemp worldRanks=1;     //世界排行榜的数据
+}
+
+//跨服家族排行榜
+message CrossUnionRankTemp {
+    required int64  serverId=1;         //服务器ID
+    required int64  unionId =2;        //玩家ID
+    required string unionName=3;       //玩家名字
+    optional string masterName = 4;        //族长
+    optional string  totalEarnMoney=5;       
+    optional int32   currentPeopleCount=6;
+    optional int32   exp=7;    
+    optional int32   param1=8;   
+    optional int32   masterIdentityId=9;        //族长身份    
+    optional int32   masterSex=10;                //族长性别    
+    optional roleSkinDataTemp   masterMainRoleSkin=11;       //族长皮肤
+    optional string unionBadge = 12;            //家族徽章
+}
+
+message CrossUnionRankListTemp{
+    repeated  CrossUnionRankTemp rankList=1;     //家族排行榜的数据
+}
+
+// boss数据
+message UnionBossTemp{
+    required int32 bossId = 1; //bossid
+    required int32 isOpen = 2; //boss是否开启
+    required string remainBlood = 3; //boss剩余血量
+    required int32 resetTimes = 4; //重置次数
+}
+
+//家族战人才的数据
+message UnionFightTalentTemp{
+    required string playerName=1;    //玩家的名字
+    required int32 position=2;      //家族的职位
+    required int32 talentId=3;        //人才的模版ID
+    optional int32 talentStar=4;    //人才的星级
+    required int32 vehicleTypeId=5; //座驾的模版ID
+    optional int32 vehicleLv=6;        //座驾的等级
+    optional int64 itemType=7;        //使用的道具ID
+    required int64 maxHp=8;            //人才的当前血量
+}
+
+message UnionFightTalentListTemp{
+    repeated  UnionFightTalentTemp  selfTalentList=1;         //自已人才的列表
+    repeated  UnionFightTalentTemp  enemyTalentList=2;        //敌方人才的列表
+}
+message smUnionBossList{
+    required int32 ret = 1;
+    repeated UnionBossTemp unionBossList = 2; // 家族boss数据
+    optional int32  dayWealthCost=3;      //每日财富消耗 
+}
+
+
+
+message cmUnionBossReset {
+    required int32 bossId = 1; // bossId
+    required int32 type = 2; // 类型  传入道具类型
+}
+message smUnionBossReset {
+    required int32 ret = 1;
+}
+
+message UnionBossResetResp {
+    required int32 ret = 1;
+}  
+
+// 开启boss 1财富 2钻石
+message cmOpenBoss {
+    required int32 bossId = 1;
+    required int32 type = 2;
+}
+
+message smOpenBoss {
+    required int32 ret = 1;
+}
+
+// 攻击boss
+message cmAttackUnionBoss {
+    required int32 bossId = 1; //bossId
+    repeated int32 talentIdList = 2;  //人才列表
+}
+
+message smAttackUnionBoss {
+    required int32 ret = 1;
+    optional int32 isKill = 2;
+    optional int64 realDamage = 3;
+}
+
+// 获取boss伤害记录
+message cmUnionBossAttackRecord {
+    required int32 bossId = 1;
+}
+
+message UnionBossDamageTemp {
+    required int64 userId = 1;
+    optional string nickName = 2;
+    optional int32 titleId = 3;
+    optional string titlename = 4;
+    optional string headIcon = 5;
+    optional int64 damage = 6;
+    optional int32 kill = 7;
+    optional int64 time = 8;
+    repeated int32 talentList = 9;
+    optional int32 position = 10;
+}
+
+message UnionBossDamageList {
+    repeated UnionBossDamageTemp damageList = 1;
+}
+
+message smUnionBossAttackRecord {
+    required int32 ret = 1;
+    optional UnionBossDamageList damageRecord = 2;
+}
+
+
+// 获取boss伤害排行
+message cmUnionBossDamageRank {
+    required int32 bossId = 1;
+}
+
+message UnionBossDamageRankTemp {
+    required int64 userId = 1;
+    optional string nickName = 2;
+    optional int32 titleId = 3;
+    optional string titlename = 4;
+    optional string headIcon = 5;
+    optional int64 damage = 6;
+    optional int32 position = 7;
+}
+
+message UnionBossDamageRank {
+    repeated UnionBossDamageRankTemp damageList = 1;
+}
+
+message smUnionBossDamageRank {
+    required int32 ret = 1;
+    optional UnionBossDamageRank rank = 2;
+}
+
+// 家族战 跨服战斗数据
+message cmUnionFightRecord{
+    required int32 unionId = 1;            // 家族的ID
+    required int32 serverId = 2;        // 区服的ID
+}
+
+message unionFightRecordDataTemp{
+    repeated UnionFightTalentInfoTemp  talentList=1;         //人才的列表
+    optional int64 serverId = 2;                   //服务器ID    
+    optional string unionName = 3;                   //家族名称    
+    optional string    addGold=4;                   //添加的金币
+    optional int32     addScore=5;                   //添加的积分
+    optional int32     level=6;                      //家族等级
+    optional int64     unionId=7;                      //家族id
+    
+}
+
+
+
+message smUnionFightUnJoinMembers{
+    required int32 ret = 1;
+    repeated int64 userList=2;
+}
+message smUnionFightRecord{
+    required int32 ret=1;
+    optional unionFightRecordDataTemp bottomFight = 2;         //下方战斗数据    
+    optional unionFightRecordDataTemp topFight = 3;         //上方战斗数据    
+}
+
+// 获取战报
+message UnionFightReportTemp {
+    required int64 serverId = 1; //服务器id
+    required int64 unionId = 2; // 家族id
+    required string unionName = 3; //家族名
+    required int64 totalAttr = 4; //战力
+    required int32 winStatus = 5; //1赢 -1输 0平
+    required int64 ememyServerId = 6; //敌人服务器id 当serverId 为-1时 没有对手 轮空
+    required string ememyUnionName = 7; //敌人家族名
+}
+
+message smUnionFightReport {
+    repeated UnionFightReportTemp data =1 ;
+}
+
+
+//-------------------------------------消息模版-结束---------------------------------
+
+
+//----------------------------------登录-开始--------------------------------------
+message cmLogin{
+    required int64  playerId=1;         //玩家ID
+    required string password = 2;       //密码
+    required int32  clientType=3;       //终端类型（app或者网页） 
+    required int64  friendId=4;         //邀请玩家的ID (0:没有邀请人 其它有邀请玩家的ID)   
+    optional string latitude=5;         //经度
+    optional string longitude=6;        //纬度
+    optional string ip=7;               //ip 客户端忽略
+    optional int32  clientVer=8;        //客户端的版本号
+    optional string deviceModel=9;      //设置设备的手机型号
+    optional string deviceId=10;        //设置设备码
+    optional string networkType=11;     //设置网络类型
+    optional string macAddress=12;      //mac地址
+    optional string packageId=13;       //包体的ID
+    optional string urlId=14;           //链接的ID
+    optional string bigChannelId=15;    //大区的ID
+    optional string langType=16;        //登录语言  zh-cn(简体国内) zh-tw(台湾繁体) en（英文） zh-abroad（海外简体）
+    optional string openkey=17;            //玩吧专用
+    optional string pf=18;                //玩吧专用 客户端版本
+    optional string headUrl=19;            //用户头像
+    optional int32 ewcid=20;            //ewcid
+
+}
+
+message smLogin{
+    required int32  ret =1;         //是否成功
+    optional int32 clientVer=2;    //客户端的版本号
+    optional string QQNumberDB=3;     //QQ群号
+    optional string vipRechargeNumber=4;       //VIP客服充值客度
+    optional string vipWChatNumber=5;          //VIP客服微信号
+    optional bool isCloseCharge=6;              //是否关闭充值
+    optional bool isCrossRichAreaClose=7;          //是否开启跨服金融
+    optional bool isCloseGameShare=8;          //是否关闭游戏分享功能
+    optional int32 curPassMissonId=9;          //当前关卡进度
+    optional bool isCloseCarShow=10;          //是否关闭名车馆
+    optional bool isCloseTalentAppoint=11;          //是否关闭人才委派
+    optional bool isCloseTalentStudyExt=12;          //是否关闭人才进修扩展
+    optional int32 time = 13;          //返回服务端的时间
+    optional int32 utc = 14;          //时区 
+    optional string qrCodeUrl = 15;    //二维码地址 
+}
+
+
+message cmSendLocation{
+    required string latitude=1;         //经度
+    required string longitude=2;        //纬度
+}
+
+
+//------------------------完美分割线----登录------结束----------------------------------------------
+
+
+//------------------------完美分割线----银行------开始---------------------------------
+
+//金币收取
+message cmRecevGold{
+    required int32 recevNum = 1;         //收取次数
+    required int32 critNum = 2;           //暴击次数
+    required string goldNum = 3;             //金币数量
+}
+message smRecevGold{
+    required int32 ret=1;      
+}
+//------------------------完美分割线----银行------结束---------------------------------
+
+//--------------------------------------玩家------开始----------------------------------------------
+//客户端请求Ping（心跳每十秒一次）
+message cmPing{
+    
+}
+
+//服务端Ping返回
+message smPing{
+    required int32 time=1;              //返回服务端的时间
+    optional int32 utc=2;              //时区
+}
+//发送玩家自己的数据
+message smPlayerData{
+    required int64   playerId=1;            //用户id
+    optional string  playerName=2;            //名字
+    optional int32   sex=3;                    //性别
+    optional string  headUrl=4;               //头像
+    optional int32   diamond=5;               //钻石
+    optional string  gold=6;                   //金币
+    optional int32   lv=7;                  //玩家等级
+    optional int32   exp=8;                 //玩家经验 
+    optional int32   rank=9;                //玩家排名                                        
+    optional string  titleId=10;            //玩家称号    
+    optional int32   heartNum=11;           //红心的值
+    optional int32   mansionLevel=12;       //豪宅
+    optional string  goldSpeed=13;          //玩家的赚钱速度
+    optional bool    isExist=14;            //是否存在
+    optional int64   zangTime = 15;         //点赞时间
+    optional string  unionName=16;          //家族名称
+    optional int64  registerTime=17;        //注册时间
+    optional string city=18;                //城市
+    optional string titleName=19;           //玩家的当前称号的前缀
+    optional int32  identityId=20;            //玩家身份的ID
+    optional int64 serverId =21;            //当前服务器ID
+    optional int64 freeDiamond =22;            //免费钻石（非人民币充值获得的钻石）
+    optional int32 totalChargeValue =23;    //充值金额
+    optional int32 mainSkinId =25;            //主城皮肤id
+    optional int64 superStewardEndTime = 26;    //超级管家结束时间
+    optional int32 dayChargeValue =27;    //每日充值金额
+}
+
+
+
+//同步玩家其它的数据
+message smPlayerOtherData{
+    required  int64   weekCardEndTime=1;       //周卡领取时间
+    required  int64   lastGetWeekCardTime=2;  
+    required  int64   lifelongCardEndTime=3;  
+    required  int64   lastGetLifelongCardTime=4;     
+    required  int32   worshipTimes = 5;
+    required  int64   lastGetRumorCardTime =6; //最后一次领取谣言卡时间
+    required  int32   totalInvestemntTimes = 7;
+    required  int32   totalCooperationTimes =8;
+    required  string  totalCooperationGoldSpeed = 9;          
+    required  int32   mansionLevel=10;             //豪宅
+    required  int64   consortiumRankGetRewardTime=11;//上一次领取财团奖励的时间
+    required  int32   likeTimes=12;          //剩余点赞资数
+    required  int64   systemOpenId=13;              //系统开启的ID
+    required  string  talentExp=14;                 //人才阅历
+    required  int64   goldSpeedAddEndTime=15;       //翻倍卡时间
+    required  int32   goldSpeedAddValue=16;         //翻倍添加的值   
+    optional  string  finance=17;                   //金融币 
+    optional  string  talentSkillPoint=18;          //人才技能点
+    optional  int32   identityId=19;                 //当前的身份ID
+    optional  int64   identityGetRewardTime=20;      //身份邻取奖励的时间    
+    optional  string  country=21;                    //国家
+    optional  string  provincial=22;                 //省
+    optional  string  city=23;                       //市    
+    optional  string  zhou=24;                       //洲
+    optional  string  consortiumCurrency=25;         //商战币
+    optional  int64   looseMoneyTime=26;             //散财的时间
+    optional  string  looseMoneyReward=27;           //散财的奖励
+    optional  int32   luckValue=28;                  //十连抽幸运值
+    optional  int32   rechargeValue=29;              //充值的钱  
+    optional  int32   chargeHeadUrlTime=30;          //改变头像的次数  
+    optional  int64   forbiddenSpeakTime=31;         //禁言时间
+    optional int32  shareTime = 32;                 //分享次数
+    optional int32  partyScore=33;            //宴会积分
+    optional int32  partyFreeTimes=34;            //每日免费参加小型私人宴会的次数
+    optional  int32   partyBuyTimes =35;        //宴会购买次数
+    optional  int32   activityScore=36;            //活动积分
+    optional  int64   unionFightWinBuffTime =37;        //家族战胜利buff截止时间
+    optional  int32   unionFightScore=38;            //家族战活动积分
+    optional  int32   follow=39;            //微信是否关注过
+    optional  int32   followClick=40;            //微信关注且点击过按钮
+    optional int32  changedCityTimes=41;            //修改城市定位次数
+    optional int32  cityBuildRank=42;                //城市建设名次
+    optional int64  cityBuildBuffTime=43;            //城市建设buff截止时间
+    optional int64  crossBossSocre=44;            //跨服boss货币
+    optional int32  recevCollectGiftState=45;            //领取收藏（0:不能领取 1：可领取 2：已领取）
+    optional bool  isRecevVipGift=46;            //玩吧vip礼包
+    optional int32 attention = 47; //关注状态 0 未关注 1关注 2关注并领奖
+    optional int32 realName = 48;   //实名状态  0 未实名 1实名 2实名并领奖
+    optional  int64   monthCardEndTime=49;           //月卡结束时间
+    optional  int64   lastGetMonthCardTime=50;       //月卡领取时间
+    optional  bool   isReceiveWechatH5ConcerReward=51;             //是否领取微信H5首次登录的奖励
+    optional  int64   crossTradeWarSocre=52;           //跨服商战货币
+    optional  int32   skinTicket=53;           //皮肤兑换券
+    optional  int32   crossGradeSocre=54;           //决胜华尔街货币
+    optional  int32   roleSkinId=55;               //穿戴中角色皮肤
+    optional int32 changedSexNum = 56;       //修改性别次数
+
+    optional int32 realNameReward = 57;       //微端实名认证状态 0未领奖 1已领奖
+    optional int32 phoneReward = 58;       //手机认证领奖状态 0未领奖1已领奖
+    optional int32 realNameRigistr = 59;       //105实名认证领奖状态 0未领奖1已领奖
+    optional int64 transferServiceTime = 60;       //转服成功时间
+}
+
+
+//同步金钱跟速度
+message smSyncGoldSpeed{
+     required string totalGold=1;
+     required string goldSpeed=2;   
+}
+
+//同步更新玩家的资源信息
+message smAttriuteArr{
+    repeated attriuteTemp attrs=1; //1:diamond 2:gold 8:likeTimes 14:heartNum   16:finance  18:goldSpeedAddEndTime 19:goldSpeedAddValue  22:talentExp 23:systemOpenId 30:consortiumCurrency　31:looseMoneyReward 32:rechargeValue  46forbiddenSpeakTime 63activityScore
+}
+
+//查看其它玩家的详细信息
+message cmOtherPlayerInfo{
+    required int64 playerId =1;                 //查看其它玩家的ID    
+}
+
+//查看其它玩家的详细信息
+message smOtherPlayerInfo{
+    required smPlayerData playerData =1;        //玩家的基本数据
+    repeated buildingTemp buildList = 2;        //所有建筑的数据
+    repeated TalentTemp talentList=3;           //人才数据
+    repeated VehicleTemp vehicleList=4;         //座驾数据
+    repeated SecretaryTemp secretaryList=5;         //秘书数据
+    optional  int32   roleSkinId=6;               //穿戴中角色皮肤
+    repeated roleSkinDataTemp roleSkinList = 7;       //已激活的皮肤列表
+    repeated TalentSkinTemp talentSkinList = 8;       //已激活的人才皮肤列表
+    optional smVillaSystemInfo villaInfo = 9;       //别墅
+    optional int64 monthCardTime = 10;              //月卡结束时间
+    repeated int32 skinIdList = 11;              //时装藏馆数据
+    repeated RczbTreasureTemp list = 12;        //其它玩家珍宝数据
+    repeated int32 starGemInfo = 13;            //点亮的ID集合
+    repeated MouseInfoTemp mouseList = 14;      //囤鼠信息
+}
+
+//公告
+message smSysNotice{ 
+    required string content=1;              //滚动的文本
+}
+
+//同步显示通知的UI
+message smSyncNoticeShowUi{
+    optional int32  ret =1;         //错误码
+    optional string titleStr=2;     //奖励标题
+    optional string prizeStr=3;     //奖励内容字段
+}
+
+message smPlayerOfflineAward{
+    required int32  offlineTime=1;
+    required string goldCount=2;
+}
+
+message smUpdateIdentity{
+    required int32  ret =1;         //错误码
+    optional int32  identityId=2;   //身份ID    
+}
+
+message smIdentityGetReward{
+    required int32  ret =1;         //错误码
+    optional int64  identityGetRewardTime=2;   //领取身份奖励的时间
+}
+
+//获取祝福跟谣言的列表
+message smWishRumorList{
+    repeated WishRumorTemp list=1;
+}
+
+//散财消息返回
+message smLooseMoney{
+    required int32 ret =1;
+    required int64 looseMoneyTime=2;    //开始散财的时间
+}
+
+//同步玩家散财的数据
+message smSyncLooseMoney{
+    required int32 id=1;
+    required int64 playerId=2;
+    required string playerName=3;
+    required string headUrl=4;
+    required int32  titleId=5;           //身份ID
+    required string titleName=6;         //身份名字
+    repeated VehicleTemp  list=7;     //座驾的类型ID   
+    optional int32 serverId=8;             //服务器id
+    optional int32 areaType=9;             //区域类型 1：全服 2：分组区服 3：本服
+}
+
+//获取散财的奖励
+message cmGetLooseMoneyReward{
+    required int32 outingId=1;        //出行编号
+    required int64 userId=2;          //出行用户编号
+    required int64 serverId=3;        //出行用户所处区服
+    required int32 vehicleCount=4;    //出行车数量
+
+}
+//获取散财的奖励的返回
+message smGetLooseMoneyReward{
+    required int32 ret=1;
+    required string reward=2;
+}
+
+//通知车队归来的消息
+message smNoticeVehicleCome{
+    required int32 playerNum=1;
+    required string reward=2;
+    optional int32 areaType=3;
+}
+
+message cmLookVehicle{
+    required int64 playerId =1;                 //查看其它玩家的座驾    
+}
+
+//查看其它玩家的座驾   
+message smLookVehicle{
+    required string playerName=1;
+    repeated VehicleTemp list =2;       //玩家的座驾数据   
+}
+
+//幸运抽奖
+message cmLuckDraw{
+    required int32 drawType=1;          //1:单抽 10:十连抽
+}
+
+message smLuckDraw{
+    required int32 ret=1;
+    optional string rewards=2;
+    optional  int32 luckValue=3;                  //十连抽幸运值
+
+}
+
+//设置玩家的头像
+message cmSetHeadUrl{
+    required string headUrl=1;
+}
+
+message smSetHeadUrl{
+    required int32  ret=1;
+    optional string headUrl=2;
+    optional int32  chargeHeadUrlTime=3;          //改变头像的次数  
+}
+//请求更改玩家的名字
+message cmChangeName{
+    required string name=1;         //玩家的名字
+}
+//请求更改玩家的名字的返回
+message smChangeName{
+    required int32  ret=1;
+    optional string name=2;
+}
+
+//停服公告
+message smServerStopNotice{
+    required string content=1;
+}
+//--------------------------------------玩家------结束----------------------------------------------
+
+//------------------秘书------开始-----------------------------
+
+//秘书
+message SecretaryTemp{
+    required int32 secretaryId=1;                       //秘书ID
+    optional int32 closeValue=2;                        //亲密值
+    optional int64 skillExp=3;                          //经验值
+    optional int32 star=4;                              //星级
+    repeated int32 lvs=5;                               //技能等级列表
+    optional int32 talentId=6;                          //配对的人才Id
+    optional int32 equipCount=7;                        //装备的次数
+    optional int32 unionFightCount=8;                   //家族战出战次数
+    optional int32 aptExp=9;                            //资质技能经验
+    optional int32 rest=10;                            //是否休息 1：休息0：正常
+}
+
+
+//秘书列表返回的消息
+message smSecretaryList{
+    repeated SecretaryTemp list=1;                     //秘书列表
+}
+message smSyncSecretaryList{
+    repeated SecretaryTemp list=1;                     //秘书列表
+}
+
+// 秘书技能升级
+message cmSecretarySkillLv{
+    required int32 secretaryId=1;                       //秘书ID
+    required int32 skillIndex=2;                       //技能index
+    required int32 upType=3;                       //升级类型 0一次 1十次
+}
+message smSecretarySkillLv{
+    required int32 ret = 1;
+}
+
+// 秘书升星
+message cmSecretaryStarUp{
+    required int32 secretaryId=1;                       //秘书ID
+}
+message smSecretaryStarUp{
+    required int32 ret = 1;
+}
+
+// 秘书装备人才
+message cmSecretaryEquipTalent{
+    required int32 secretaryId=1;                       //秘书ID
+    required int32 talentId=2;                       //人才ID
+}
+message smSecretaryEquipTalent{
+    required int32 ret = 1;
+}
+
+// 秘书获取
+message cmSecretaryGet{
+    required int32 secretaryPieceId=1;                       //秘书碎片ID
+}
+message smSecretaryGet{
+    required int32 ret = 1;
+}
+
+// 秘书约会
+message cmSecretaryTryst{
+    required int32 type=1;                       //1随机 2一键 3指定
+    optional int32 secretaryId = 2;              //秘书ID
+}
+
+message secretaryTrystTemp{
+    required int32 secretaryId = 1; //秘书ID
+    optional int32 addExp = 2; //增加的经验
+    optional int32 addPer = 3; //增加的亲密值
+
+}
+
+message smSecretaryTryst{
+    required int32 ret = 1;
+    repeated secretaryTrystTemp secretaryIdList=2;                      
+}
+
+// 秘书赠送礼物
+message cmSecretaryGift{
+    required int32 secretaryId=1;                       //秘书ID
+    required int32 giftId = 2;                       //礼物Id
+    required int32 giftNum = 3;                       //礼物数量
+
+}
+
+message smSecretaryGift{
+    required int32 ret = 1;
+    required int32 addPer = 2; //增加的亲密值
+}
+
+
+message smSecretaryVigor{
+    required int32 vigorVaule = 1;  // 当前值
+    optional int64 time = 2;    // 下次恢复时间
+}
+
+
+
+//------------------秘书------结束-----------------------------
+
+//角色数据模板
+message roleSkinDataTemp {    
+    required int32 skinId = 1;        //皮肤Id
+    required int32 level = 2;        //等级        
+    optional int32 endTime = 3;        //结束时间（0表示永久）
+}
+
+//---------------------------------------------宠物start----------------------------------
+message MouseInfoTemp{
+    optional int64 onlyId = 1;
+    optional int32 mouseId = 2;         //配置id
+    optional int32 exp = 3;             //经验
+    optional int32 attack = 4;          //攻击资质
+    optional int32 defensive = 5;       //防御资质
+    optional int32 penetration = 6;     //破甲资质
+    optional int32 vital = 7;           //生命资质
+    optional bool lock = 8;             //锁定
+    optional int32 talentId = 9;        //装备人才
+    optional bool battle = 10;          //上阵
+    optional int32 generations = 11;    //代数
+    optional string skillStr = 12;      //skillId=lv;skillId=lv
+    optional int32 holeId = 13;         //阵容位置ID
+    optional int32 quality = 14;        //品质
+    optional string mouseSkin = 15;     //幻化数据  skinId:lv
+    optional int32 replaceId = 16;      //替换Id
+}
+
+message MouseMarriedInfoTemp{
+    optional int64 onlyId = 1;
+    optional int32 mouseId = 2;         //配置id
+    optional int32 attack = 3;          //攻击资质
+    optional int32 defensive = 4;       //防御资质
+    optional int32 penetration = 5;     //破甲资质
+    optional int32 vital = 6;           //生命资质
+    optional int32 generations = 7;     //代数
+    optional string skillStr = 8;       //skillId=lv;skillId=lv
+    optional int64 guestUserId = 9;     //接收人id
+    optional string guestName = 10;     //接收人名字
+    optional int64 createTime = 11;     //创建时间
+    optional int32 roomId = 12;         //房间id
+    optional bool hostStatus = 13;      //发起人繁育完成状态
+    optional bool guestStatus = 14;     //接收人繁育完成状态
+    optional int32 exp = 15;            //经验
+    optional MouseInfoTemp receiveMouse = 16;   //接收人的老鼠
+    optional int32 quality = 17;        //品质
+    optional MouseInfoTemp newGuestMouse = 18;//发起人确认繁育完成后接收人待领取宠物信息
+}
+message MouseTeamTemp{
+    required int32 holeId = 1;
+    required int64 onlyId = 2;
+}
+
+//抽奖信息              27830
+message smMouseDrawInfo{
+    required int32 ret = 1;
+    optional int32 index = 2;//当前奖励下标
+    optional int32 luckNum = 3;//当前幸运值
+    optional int32 drawNum = 4;//当日已抽次数
+    optional int32 drawTotal = 5;//累计捕捉次数
+    optional int32 bagNumMax = 6;//宠物背包上限
+}
+
+//抽奖                27831
+message cmMouseDraw{
+    required int32 itemId = 1;          //抽奖道具
+    required int32 type = 2;            //1 单抽 2 连抽
+}
+message smMouseDraw{
+    required int32 ret = 1;
+    repeated MouseInfoTemp mouseList = 2; //获得老鼠列表
+    optional int32 luckNum = 3;         //当前幸运值
+}
+
+//回收                27832
+message cmMouseRecover{
+    repeated int64 onlyIdList = 1;  //宠物id
+}
+
+message smMouseRecover{
+    required int32 ret = 1;
+    optional string reward = 2;
+}
+
+//宠物信息          27833
+message smMouseInfo{
+    required int32 ret = 1;
+    repeated MouseInfoTemp mouseList = 2;
+    optional int32 lv = 3;//关卡信息
+    repeated MouseTeamTemp teamInfo = 4;  //当前阵容
+    optional int32 challengeNum = 5;//剩余挑战次数
+}
+
+//装备人才          27834
+message cmMouseTalentEquip{
+    required int32 talentId = 1; //0为卸下
+    required int64 onlyId = 2;
+}
+
+message smMouseTalentEquip{
+    required int32 ret = 1;
+}
+
+//解锁锁定          27835
+message cmMouseLock{
+    required int64 onlyId = 1;
+}
+
+message smMouseLock{
+    required int32 ret = 1;
+}
+
+//领取幸运值奖励   27836
+message cmMouseGetLuckReward{
+    required int32 num = 1;
+}
+
+message smMouseGetLuckReward{
+    required int32 ret = 1;
+    repeated MouseInfoTemp mouseList = 2; //获得老鼠列表
+    optional int32 luckNum = 3;         //当前幸运值
+}
+
+//设置关卡阵容    27837
+message cmSetBattleArray{
+    required int32 holeId = 1;
+    required int64 onlyId = 2;  //宠物id
+}
+
+message smSetBattleArray{
+    required int32 ret = 1;
+}
+
+//繁育信息  27838
+message smMouseMarriedInfo{
+    required int32 ret = 1;
+    optional int32 marriedNum = 2;              //周剩余联姻次数
+    repeated MouseMarriedInfoTemp infoList = 3; //联姻列表
+}
+
+//发起联姻请求   27839
+message cmMarriedInvite{
+    required int64 hostOnlyId = 1;  //宠物id
+    required int64 guestUserId = 2; //好友id
+}
+
+message smMarriedInvite{
+    required int32 ret = 1;
+}
+
+//繁育or拒绝  27840
+message cmMouseMarriedHandle{
+    required int64 options = 1;             //1:繁育 2：拒绝 自己发起的拒绝就是取消
+    optional int32 roomId = 2;              //房间id
+    optional int64 onlyId = 3;              //联姻传入宠物id   
+    repeated string breeding = 4;           //繁育列表  hostOnlyId=guestOnlyId 自己繁育都传这
+}
+
+message smMouseMarriedHandle{
+    required int32 ret = 1;
+    repeated MouseInfoTemp mouseInfo = 2;   //繁育宠物
+    optional string reward = 3;//返还道具
+}
+
+message MouseBattleInfoTemp{
+    optional int64 onlyId = 1;
+    optional int32 mouseId = 2;     //配置id
+    optional int32 exp = 3;         //经验
+    optional int32 generations = 4;//代数
+    optional int32 quality = 5;//品质
+    optional int64 damage = 6;//伤害
+    optional int64 injured = 7;//承受伤害
+    optional int64 treat = 8;//治疗
+    optional int32 impact = 9;//撞击次数
+}
+
+//发起挑战关卡       27841
+message cmPointFight{
+    required int32 level = 1;//关卡id
+}
+
+message smPointFight{
+    required int32 ret = 1;
+    optional int64 endTime = 2;//结束时间 秒
+    repeated MouseInfoTemp monsterInfo = 3;//怪物数据
+}
+
+//战斗结算          27842/27854
+message cmFightResult{
+    optional bool isBreak = 1;//跳过战斗
+    repeated string battleStr = 2;//客户端战斗过程 类型 1碰撞 2出场 "类型=自己宠物onlyId:对手宠物onlyId"  2=onlyId 1=hostOnlyId:gustOnlyId
+    optional int32 level = 3;//关卡id(关卡扫荡)
+    optional bool isWin = 4;//客户端战斗结果
+}
+
+message smFightResult{
+    required int32 ret = 1;
+    optional bool win = 2;//结果
+    optional string reward = 3;//奖励
+    repeated MouseBattleInfoTemp hostBattleInfo = 4;//自己伤害统计
+    repeated MouseBattleInfoTemp guestBattleInfo = 5;//敌方伤害统计
+}
+
+message MouseSegmentTemp{
+  optional int32 activityId = 1;
+  optional int32 id = 2;
+  optional string speGoods = 3;//段位名称
+  optional string lackGoods = 4;//段位
+  optional string image = 5;
+  optional int32 probability = 6;//机器人 百分比
+  optional string coefficient = 7;//机器人等级 范围,百分比  0;50
+}
+
+message MousePassCheckTemp{
+  optional int32 activityId = 1;
+  optional int32 lv = 2;//通行证等级smCrossPlayerRanks
+  optional int32 exp = 3;//经验
+  optional string reward = 4;//普通奖励
+  optional string sweetReward = 5;//高级奖励
+  optional int32 preview = 6;//高级奖励预览
+
+}
+
+message MouseArenaRankTemp {
+    optional int64 serverId = 1;
+    optional int64 userId = 2;
+    optional string playerName = 3;
+    optional string unionName = 4;
+    optional string headUrl = 6;
+    optional string city = 7;
+    optional int32 rank = 8;
+    optional int32 titleId = 9;
+    optional string titleName = 10;
+    optional int32 starsNum = 11;//星星数量
+    repeated MouseInfoTemp mouseInfo = 12;//阵容
+    optional int32  sex=13;                           //性别  
+    optional roleSkinDataTemp  mainRoleSkin=14;                   //角色皮肤
+    optional string highPet = 15;//最高战力囤鼠mouseId:skinId:skinLv
+}
+
+//静态数据    27850
+message syncMouseArenaData{
+  repeated MouseSegmentTemp segment = 1;
+  repeated MousePassCheckTemp passCheck = 2;
+}
+
+//排行榜     27851
+message smMouseArenaRank{
+  required int32 ret = 1;
+  optional MouseArenaRankTemp userInfo = 2;//自己数据
+  repeated MouseArenaRankTemp rankList = 3;//排行榜
+}
+
+//竞技场设置阵容      27852
+message cmArenaSetTeam{
+  optional int32 holeId = 1;//位置id
+  optional int64 onlyId = 2;//宠物id
+  optional bool isSyncTeamPoint = 3;//同步关卡阵容到竞技场
+}
+
+message smArenaSetTeam{
+  required int32 ret = 1;
+}
+
+//匹配对手  27853
+message cmMouseArenaMatch{
+  required int32 beiNum = 1;//挑战倍速
+}
+
+//返回对手信息
+message smMouseArenaMatch{
+  required int32 ret = 1;
+  optional MouseArenaRankTemp opponent = 2;//对手信息 userId为0为机器人
+  optional int64 endTime = 3;//结束时间 秒
+}
+
+//宠物分享              27843
+message cmMouseShare{
+    required int64 onlyId = 1;//宠物id
+    required int32 type = 2;//1：世界 2：家族
+}
+
+message smMouseShare{
+    required int32 ret = 1;
+}
+
+// 战报
+message arenaReportTemp {
+    required bool isWin = 1;        //结果
+    optional int64 time = 2;        //战斗时间 秒
+    optional string playerName = 3;
+    optional string headUrl = 4;
+    repeated MouseInfoTemp teamInfo = 5;   //囤鼠阵容
+}
+
+//竞技场战斗日志
+message smArenaReport {
+    repeated arenaReportTemp reports =1 ;
+}
+
+//解锁幻化  27910
+message cmMouseSkinUnLock{
+    required int32 skinId = 1;//皮肤Id
+}
+message smMouseSkinUnLock{
+    required int32 ret = 1;
+}
+
+//升级幻化      27911
+message cmMouseSkinUpgrade{
+    required int32 skinId = 1;//皮肤Id
+    required int32 num = 2;//升级次数
+}
+
+message smMouseSkinUpgrade{
+    required int32 ret = 1;
+}
+
+//宠物装备幻化    27912
+message cmMouseSkinEquip{
+    required int64 onlyId = 1;//宠物Id   0为卸下
+    required int32 skinId = 2;//幻化Id
+}
+
+message smMouseSkinEquip{
+    required int32 ret = 1;
+}
+
+//宠物皮肤信息    27913
+message smMouseSkinInfo{
+    repeated string skinInfos = 1; //skinId:lv
+}
+
+//宠物背包扩容   27844
+message smMouseBagAdd{
+    required int32 ret = 1;
+}
+
+//宠物转换  27845
+message cmMouseReplace{
+    required int64 onlyId = 1;//转换囤鼠唯一id
+}
+message smMouseReplace{
+    required int32 ret = 1;
+    optional int32 mouseId = 2;//随机出的mouseId 宠物属性不变所以只返回一个mouseId
+}
+
+//宠物转换确认    27846
+message cmMouseReplaceSave{
+    required int64 onlyId = 1;//转换囤鼠唯一id
+}
+message smMouseReplaceSave{
+    required int32 ret = 1;
+}
+//宠物转换取消    27847
+message cmCancelMouseReplace{
+    required int64 onlyId = 1;//转换囤鼠唯一id
+}
+message smCancelMouseReplace{
+    required int32 ret = 1;
+}
+//---------------------------------------------宠物end------------------------------------
+//家族徽章模板
+message UnionBadgeTempMsg{
+    required int32 id = 1;
+    required int64 endTime = 2;   //徽章结束时间
+}
+
+//家族战人才的数据
+message UnionFightTalentInfoTemp {
+    optional int64 playerId = 1;
+    required string nickName = 2; // 名字
+    required int32 talentId = 3;  // 人才id
+    required int64 attr = 4; // 属性值
+    required int32 position = 5; // 职位
+    optional int32 bookType = 6; // 秘籍
+    optional int32 vehicleTypeId = 7; //座驾的模版ID
+    optional int32 vehicleLv = 8;        //座驾的等级
+    optional int32 skillAddition = 9;        //技能加成
+    optional int32 talentLv = 10; //人才等级
+    optional int32 vehicleHoleNum = 11;//座驾孔数量
+    optional int32 awakeLevel = 12;//觉醒次数
+    optional int32 engineLv = 13;//引擎等级
+    optional int32 advancedLv = 14;//进阶等级
+    optional int32 useSkinId = 15;        //穿戴的皮肤id
+    optional int32 titleId = 16;        //称号id
+    optional int32  haloSkillLv = 17;       //光环技能等级
+    optional int32 exclusiveSkillLv = 18;  //升品扩展技能等级
+}
+//--------------------------人才皮肤-----------------------------
+
+//更换皮肤
+message cmChangedTalentSkin {
+    required int32 skinId = 1;            //皮肤id
+    required int32 talentId = 2;        //人才id
+}
+
+message smChangedTalentSkin {
+    required int32 ret = 1;    
+    optional int32 skinId = 2;            //皮肤id
+    optional int32 talentId = 3;        //人才id
+}
+
+//人才皮肤
+message TalentSkinTemp {
+    required int32 skinId = 1;    
+    required int32 addApt = 2;    
+}
+
+
+//拥有的皮肤
+message smOwndTalentSkin {
+    repeated TalentSkinTemp skinList = 1;            //皮肤id
+}
+
+//购买皮肤
+message cmBuyTalentSkin {
+    required int32 shopId = 1;    //商店id
+}
+
+message smBuyTalentSkin {
+    required int32 ret = 1;    
+    optional int32 shopId = 2;    //商店id
+}
+
+//人才皮肤技能洗练
+message cmTalentSkinSkillUp {
+    required int32 talentSkinId = 1;
+}
+
+message smTalentSkinSkillUp {
+    required int32 ret = 1;
+    optional int32 value = 2;
+}
+//-------------------别墅系统----------------------
+
+//升级
+message cmVenusLevelUp {
+    required int32 venusType = 1;
+    optional int32 pos = 2;
+}
+message smVenusLevelUp {
+    required int32 ret = 1;
+}
+
+// 收取
+message cmVenusCollect {
+    required int32 venusType = 1;
+    optional int32 standPos = 2;
+}
+
+message smVenusCollect {
+    required int32 venusType = 1;
+    repeated RewardTemp reward = 2;
+}
+
+//收益
+message RewardTemp {
+    optional int32 itemId = 1;
+    required string reward = 2;
+}
+
+//展出
+message cmExhibition {
+    required int32 venusType = 1;
+    required int32 pos = 2;
+    required int32 itemId = 3;
+}
+
+message smExhibition {
+    required int32 ret = 1;
+    repeated RewardTemp reward = 2;
+}
+
+//场馆
+message VenusTemp {
+    required int32 venusType = 1;
+    required int32 lv = 2;
+    optional int64 yield = 3;
+    optional int64 lastCollectTime = 4;
+    repeated StandTemp stands = 5;
+}
+
+//展台
+message StandTemp {
+    required int32 pos = 1;
+    required int32 lv = 2;
+    required int32 itemId = 3;
+    required int64 yield = 4;
+    required int64 lastCollectTime = 5;
+}
+
+//别墅系统建筑列表
+message smVillaSystemInfo {
+    repeated VenusTemp venus = 1;
+    optional HonorVenusInfo honorVenusInfo = 2;
+    optional ConfidantInfoTemp confidantData = 3;
+    optional TechnologyCenterInfo technologyCenterInfo = 4;
+}
+
+//别墅科技馆信息
+message TechnologyCenterInfo {
+    optional int32 technologyconsultant = 1;//科技顾问类型
+    optional int64 technologyconsultantTM = 2;//科技顾问开启时间
+}
+// 同步科技馆信息
+message smTechnologyCenterInfo {
+    optional int32 technologyconsultant = 1;//科技顾问类型
+    optional int64 technologyconsultantTM = 2;//科技顾问开启时间
+}
+
+// 同步单个场馆
+message smSyncVenusInfo {
+    required VenusTemp venusInfo = 1;
+}
+
+//荣誉馆具体信息
+message HonorVenusInfo {
+    repeated UserCupInfo userCupInfo = 1;
+    required UserHonorInfo userHonorInfo = 2;
+}
+
+// 同步荣誉馆信息
+message smSyncHonorVenusInfo {
+    required HonorVenusInfo honorVenusInfo = 1;
+}
+
+
+//玩家奖杯信息
+message UserCupInfo {
+    required int32 cupId = 1;
+    required int32 num = 2;
+}
+
+//玩家荣誉信息
+message UserHonorInfo {
+    required int64 totalHonorVal = 1;
+    required int64 ownedHonorVal = 2;
+    required int32 honorSkillLv = 3;
+}
+
+// 荣耀技能升级
+message smUserHonorLvUp {
+    required int32 ret = 1;
+}
+
+// 知音
+// 请求知音别苑数据
+message smConfidantInfoRespMsg {
+    optional ConfidantInfoTemp confidantInfo = 1;               //结交后数据
+    optional FriendRoomInfoTemp currentFriendRoomInfo  = 2;     //处于知音室内数据
+    optional int64 abjureTime = 3;                              //上次断交时间
+    optional int32 historyLv = 4;                               // 新加字段：历史最高等级
+}
+
+message smSyncConfidantInfoRespMsg {
+    optional ConfidantInfoTemp confidantInfo = 1;               //结交后数据
+    optional FriendRoomInfoTemp currentFriendRoomInfo  = 2;     //处于知音室内数据
+    optional int64 abjureTime = 3;                               //上次断交时间
+    optional int32 historyLv = 4;                               // 新加字段：历史最高等级
+}
+
+message giftTimesTodayTemp {
+    required int32 id = 1;
+    required int32 num = 2;
+}
+
+//玩家自身知音数据
+message FriendVenusInfoTemp {
+    required int32 banquetTimesToday = 1;       //当天举办宴会次数
+    repeated giftTimesTodayTemp giftTimesList = 2;          //当天赠礼次数
+    required string getRewardIndex = 3;         //活跃领奖
+    optional int64 vaule = 4;                 //知音值
+    optional int64 integal = 5;                 //知音活跃值
+}
+
+// 知音数据
+message ConfidantInfoTemp {
+    optional CrossUserBaseData playerInfo = 1;              //对方基础数据
+    optional FriendVenusInfoTemp mainInfo = 2;      //玩家自身知音数据
+    optional int32 histroyLv = 3;                           //历史最高等级
+    repeated ConfidantHistoryTemp friendVenusHistory = 4;    //知音历史
+}
+
+// 知音室数据
+message FriendRoomInfoTemp {
+    required int32 roomId = 1;                  //房间ID
+    required CrossUserBaseData hostUserInfo = 2;        //主人基础信息
+    optional CrossUserBaseData guestUserInfo = 3;       //客人基础信息
+    required int64 endTime = 4;              //解散时间
+    optional int32 limitTitleId = 5;            //身份限制条件
+    optional string password = 6;               //密码
+    required bool hostStatus = 7;               //主人状态
+    optional bool guestStatus = 8;              //客人状态
+    optional int32 labelId = 9;               //标签ID
+}
+
+// 创建知音室
+message cmCreateFriendRoom {
+    required int32 type = 1;                  //1创建 2修改
+    required int32 labelId = 2;                
+    optional int32 limitTitleId = 3;               
+    optional string password = 4;                 
+}
+
+message smCreateFriendRoom {
+    required int32 ret = 1;
+    optional FriendRoomInfoTemp currentFriendRoomInfo  = 2;     //处于知音室内数据
+}
+
+// 知音室列表
+message smFriendRoomList {
+    repeated FriendRoomInfoTemp currentFriendRoomInfo  = 1;     //处于知音室内数据
+}
+
+//加入知音室
+message cmJoinFriendRoomReqMsg {
+    optional int32 roomId = 1;      //没传就是随机加入
+    optional string password = 2;   //随机加入  不传密码
+    optional bool isInvite = 3;     //是否邀请
+}
+
+message smJoinFriendRoomRespMsg {
+    required int32 ret = 1;
+    optional FriendRoomInfoTemp currentFriendRoomInfo = 2;
+}
+
+//离开知音室
+message cmLeaveFriendRoom {
+    required int32 type = 1;                  //1解散/解散房间 2踢出房间
+    required int32 roomId = 2;                
+}
+
+message smLeaveFriendRoom {
+    required int32 ret = 1;
+    optional FriendRoomInfoTemp currentFriendRoomInfo = 2;
+    optional int32 state = 3;   // 1解散 2离开
+}
+
+ //获取知音可邀请好友列表
+message smFriendRoomGetFriend {
+    repeated CrossUserBaseData list = 1;
+}
+
+ //邀请好友
+message cmInviteFriendRoom {
+    required int64  playerId = 1;        //玩家ID
+}
+message smInviteFriendRoom {
+    required int32 ret = 1;
+}
+
+//接收好友邀请信息
+message smInviteFriendNotice {
+    required int32 roomId = 1;
+    required CrossUserBaseData userData = 2;
+}
+
+//接收好友邀请信息-十分钟不在显示
+message cmInviteFriendNotice {
+    required int64  playerId = 1;        //玩家ID
+}
+
+message cmSureConfidantReqMsg {
+    required int32 type = 1;        // 1:确认, 2:取消确认
+}
+message smSureConfidantReqMsg {
+    required int32 ret = 1;
+    optional FriendRoomInfoTemp currentFriendRoomInfo = 2;
+}
+
+//断交
+message smAbjureRespMsg {
+    required int32 ret = 1;
+}
+
+//领取活跃宝箱奖励
+message cmGetIntegalRewardMsg {
+    required int32 integal = 1;
+}
+
+message smGetIntegalRewardMsg {
+    required int32 ret = 1;
+}
+//举办宴会
+message cmOpenBanquetMsg {
+    required int32 banquetId = 1;
+}
+
+message smOpenBanquetMsg {
+    required int32 ret = 1;
+    optional string reward = 2;
+}
+//  知音赠礼
+message smGiftMsg  {
+    required int32 ret = 1;
+    optional string reward = 2;
+}
+
+message cmGiftMsg {
+    required int32 giftId = 1;
+}
+
+//知音排行
+message ConfidantRankTemp  {
+    required CrossUserBaseData hostUserInfo = 1;
+    required CrossUserBaseData guestUserInfo = 2;
+    required int64 value = 3;
+}
+
+message smConfidantRankTemp {
+    repeated ConfidantRankTemp list = 1;
+}
+
+message smRandomExpertResp{
+    required int32 ret=1;
+    optional string expertInfo=2;//专家列表字符串;
+}
+
+message cmChoseExpertReq{
+    required int32 expert=1;//专家ID
+}
+
+message smChoseExpertResp{
+    required int32 ret=1;
+}
+
+//获取结交历史          协议号 5850
+message smGetConfidantHistory{
+    required int32 ret = 1;
+    repeated ConfidantHistoryTemp confidantHistory= 2;
+}
+
+message ConfidantHistoryTemp{
+    required int64 uid = 1;//uid
+    optional string name = 2;//昵称
+    optional string head = 3;//头像
+    optional int32 titleId = 4;//称号
+    optional int32 value = 5;//知音值
+    optional int64 createTime = 6;//结交时间
+    optional string titleName = 7;//身份
+}
+
+//-------------------别墅系统----------------------
+//---------------------------------------------人才珍宝start---------------------------------
+//选择心愿珍宝 26970
+message cmRczbWishSelect {
+    required int32 professType = 1; //职业
+    required int32 id1 = 2;//奖励1  id未选时为0
+    required int32 id2 = 3;//奖励2
+}
+message smRczbWishSelect {
+    required int32 ret = 1;
+}
+
+//抽奖 26971
+message cmRczbDraw {
+    required int32 professType = 1; //职业
+    required int32 drawType = 2; //1是单抽 9是十连抽
+}
+message smRczbDraw {
+    required int32 ret = 1;
+    repeated int32 reward = 2; //id的数组
+}
+
+//领奖 26972
+message cmRczbGetReward {
+    required int32 pos = 1; //领奖的位置
+}
+message smRczbGetReward {
+    required int32 ret = 1;
+    optional string reward = 2;
+}
+
+//激活 26973
+message cmRczbActivation {
+    required int32 talentId = 1; 
+}
+message smRczbActivation {
+    required int32 ret = 1;
+}
+
+//升级 26974
+message cmRczbUpdate {
+    required int32 talentId = 1; //
+    required int32 num = 2; //num 消耗道具数量，先传1  预留一键升
+}
+message smRczbUpdate {
+    required int32 ret = 1;
+}
+
+//升星 26975
+message cmRczbStarUp {
+    required int32 talentId = 1; //
+    required string cost = 2; // 升星消耗
+}
+message smRczbStarUp {
+    required int32 ret = 1;
+}
+
+//锻造 26976
+message cmRczbForgeUp {
+    required int32 talentId = 1; //
+}
+message smRczbForgeUp {
+    required int32 ret = 1;
+}
+
+//宝石合成 26977
+message cmRczbGemCompose {
+    repeated int32 gemId = 1; //宝石id的数组
+}
+message smRczbGemCompose {
+    required int32 ret = 1;
+    optional int32 goodId = 2;
+}
+
+//宝石重置 26978
+message cmRczbGemReset {
+    required int32 gemId = 1; //宝石id
+}
+message smRczbGemReset {
+    required int32 ret = 1;
+    optional int32 goodId = 2;
+}
+
+//道具分解 21107
+message cmRczbResolve {
+    repeated ResolveItemTemp item = 1;    //分解的道具
+}
+
+message smRczbResolve {
+    required int32 ret = 1;     //错误码
+    optional string reward = 2; //分解获得
+}
+
+
+//宝石装备 26979
+message cmRczbGemEquip {
+    required int32 talentId = 1; //
+    required int32 gemId = 2; //宝石id
+}
+message smRczbGemEquip {
+    required int32 ret = 1;
+}
+
+//宝石卸下 26980
+message cmRczbGemTakeOff {
+    required int32 talentId = 1; //
+    required int32 pos = 2; //孔位
+}
+message smRczbGemTakeOff {
+    required int32 ret = 1;
+}
+
+//法宝置换 26983
+message cmRczbTreasureTurn {
+    required int32 talentId1 = 1; //
+    required int32 talentId2 = 2; //
+}
+message smRczbTreasureTurn {
+    required int32 ret = 1;
+    optional string reward = 2;
+}
+
+//同步抽奖 26981
+message syncRczbDrawInfo {
+    repeated RczbDrawTemp list = 1; //孔位
+}
+
+//同步法宝 26982
+message syncRczbTreasure {
+    repeated RczbTreasureTemp list = 1; //人才
+}
+
+//主动刷新商店 26984
+message smUpdateShopInfo {
+    required int32 ret = 1;
+}
+
+//同步商店 26985
+message syncTreasureShopInfo {
+    repeated RczbShopTemp mall = 1;
+}
+
+//购买 26986
+message cmTreasureShopBuy {
+    required int32 pos = 1;
+    required int32 mallId = 2;
+}
+message smTreasureShopBuy {
+    required int32 ret = 1;
+}
+
+message ResolveItemTemp {
+    required int32 goodId = 1;  //道具ID
+    required int32 num = 2;     //数量
+}
+
+message RczbDrawTemp {
+    required int32 professType = 1;//职业
+    required int32 id1 = 2;
+    required int32 flag1 = 3;
+    required int32 id2 = 4;
+    required int32 flag2 = 5;
+}
+
+message RczbTreasureTemp {
+    required int32 talentId = 1; //人才id
+    required int32 exp = 2; //经验
+    required int32 star = 3; //星级
+    required int32 forgeLv = 4; //锻造
+    repeated RczbGemTemp gem = 5; //宝石
+    required int32 openState = 6;     //珍宝激活状态 0 未激活 1 已激活
+    required int32 badgeLv = 7;     //珍宝徽章等级
+}
+
+message RczbGemTemp {
+    required int32 pos = 1; //孔位
+    required int32 gemId = 2; //宝石id
+}
+
+message RczbShopTemp {
+    required int32 pos = 1;
+    required int32 mallId = 2;
+    required int32 state = 3;
+}
+
+//升级珍宝徽章等级 26988
+message cmBadgeUpdate {
+    required int32 talentId = 1; //珍宝id
+    required int32 replaceId = 2; //替换珍宝id 没有目标写0
+}
+
+message smBadgeUpdate {
+    required int32 ret = 1;
+}
+
+//同步 星运宝石 27810
+message syncStarGemInfo {
+    repeated int32 ids = 1;//点亮的ID集合
+}
+
+//解锁 星运宝石 27811
+message cmStarGemUnlock {
+    required int32 id = 1; //星球id
+}
+message smStarGemUnlock {
+    required int32 ret = 1;
+}
+
+//重置 星运宝石 27812
+message cmStarGemReset{
+    required int32 starId = 1;
+}
+
+//重置 星运宝石 27812
+message smStarGemReset{
+    required int32 ret = 1;
+    optional string reward = 2;
+}
+
+//同步星运点 27820 主动下发，不需要请求
+message syncGemPropNum{
+    required int64 num = 1;
+}
+
+//---------------------------------------------人才珍宝end-----------------------------------
+message CrossUserBaseData  {
+    required int64  serverId = 1;         //服务器ID
+    required int64  playerId = 2;        //玩家ID
+    required string headUrl = 3;          //头像地址
+    required string playerName = 4;       //玩家名字
+    optional int32 titleId = 5;           
+    optional string titleName = 6;
+    optional string unionName = 7;
+    optional string city = 8;      //城市
+    optional int32 sex = 9;         //性别
+    optional roleSkinDataTemp mainRoleSkin = 10;                //角色皮肤i
+    optional bool isOnline = 14;             //是否在线
+}
+
+
